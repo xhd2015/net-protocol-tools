@@ -46,7 +46,7 @@
         <dubbo.version>3.0.0-VIVO</dubbo.version>
         <!--<iqoo.auth.version>3.0.0-RELEASE</iqoo.auth.version>-->
         <curator.version>2.10.0</curator.version>
-        <zookeeper.version>3.4.6</zookeeper.version>
+        <zookeeper.version>3.4.14</zookeeper.version>
         <zkclient.version>0.7</zkclient.version>
         <netty.version>4.0.23.Final</netty.version>
         <c3p0.version>0.9.1.2</c3p0.version>
