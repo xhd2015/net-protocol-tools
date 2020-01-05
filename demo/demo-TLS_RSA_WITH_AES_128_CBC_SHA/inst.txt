@@ -1,0 +1,40 @@
+# send HTTP over TLS, to nginx server
+#  Wireshark filter: tcp.port==12443
+echo -ne 'GET / HTTP/1.1\r\nHost: my-ssl.test\r\n\r\n'|openssl s_client  -CAfile my-ssl.test.crt -cipher AES128-SHA -tls1_2 -servername my-ssl.test -bind localhost:12443 -connect my-ssl.test:443 -keylogfile key.log
+
+# decrypt the 'pre_master_secret'
+openssl rsautl -decrypt -inkey my-ssl.test.key -in pre_master_secret_encrypted.bin -out pre_master_secret
+
+# calculate 'master_secret'
+#   when using Extended Master Secret, the key is calculated based on session hash
+./prf.sh pre_master_secret 'extended master secret' <(openssl dgst -sha256 -binary <(cat client_hello_handshake.bin server_hello_handshake.bin server_certificate_handshake.bin server_hello_done_handshake.bin client_key_exchange_handshake.bin)) 48 extended_master_secret
+
+# calculate 'key_block'
+#  with AES128-CBC, the MAC key length is 20, and encryption key length is 16
+./prf.sh extended_master_secret 'key expansion' <(cat server_random.bin client_random.bin) $((20*2+16*2)) key_block
+
+# split 'key_block' to 4 keys
+head -c 20 key_block > client_MAC_key
+tail -c +21 key_block|head -c 20 > server_MAC_key
+tail -c 32 key_block|head -c 16 > client_ENC_key
+tail -c 32 key_block|tail -c 16 > server_ENC_key
+
+
+# calculate 'Finished' verifying data(12 bytes of PRF result)
+./prf.sh extended_master_secret 'client finished' <(openssl dgst -sha256 -binary <(cat client_hello_handshake.bin server_hello_handshake.bin server_certificate_handshake.bin server_hello_done_handshake.bin client_key_exchange_handshake.bin)) 12 client_finished_verify_data
+
+
+# decrypt client 'Finished'
+#  +22 = skip type(1byte)+version(2byte)+length(2byte)+IV(16byte)
+openssl enc -aes-128-cbc -d -in <(tail -c +22 client_finished_record_encrypted.bin|head -c -20) -iv "$(hexdump -ve '1/1 "%02x"' <(tail -c +6 client_finished_record_encrypted.bin|head -c 16))" -K "$(hexdump -ve '1/1 "%02x"' client_ENC_key)" -nopad|hexdump -C
+
+
+# compute message client finished MAC(the Encrypt-Then-MAC)
+#      \x00\x00\x00\x00\x00\x00\x00\x00 = 64bit sequence number(after Change Cipher Spec, sequence number re-count from 0)
+openssl dgst -sha1 -mac hmac -macopt "hexkey:$(hexdump -ve '1/1 "%02x"' client_MAC_key)" <(cat <(echo -ne '\x00\x00\x00\x00\x00\x00\x00\x00') <(echo -ne '\x16\x03\x03\x00\x30') <(tail -c +6 client_finished_record_encrypted.bin|head -c -20))
+
+# decrypt application data from client
+#   note that: -nopad must be present
+openssl enc -aes-128-cbc -d -in <(tail -c +22 client_application_data_record_encrypted.bin|head -c -20) -iv "$(hexdump -ve '1/1 "%02x"' <(tail -c +6 client_application_data_record_encrypted.bin|head -c 16))" -K "$(hexdump -ve '1/1 "%02x"' client_ENC_key)" -nopad|hexdump -C
+
+
