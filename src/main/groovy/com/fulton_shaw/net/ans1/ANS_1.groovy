@@ -374,6 +374,19 @@ def run_decodeIssuerOfCertificate() {
 
 }
 
+def run_decodeANS1DERPublicKey() {
+    String pubKeyHexString = '30820122300d06092a864886f70d01010105000382010f003082010a028201010092342e34e9bb085ba3e036562a5cf2ccfd5ba4e0615e0a3dcccc2393f425fb004cc720badbfe6913b487b9a75a30991c52ed14b79b9e12239cf68499136395e7e54bb2d094d30b5b48f5da4bed078aceb4e9eca43eeda9285077afd4d3560e0e30c544a83ccd2d031a2fc71fb74bf808d4333fc59f88a18836cd974ce9bcbbde2147db7a9b0790d8aeff2ee3ea3197186ab5881b07c14f0c6e529d9a873819edb62893329153125d26b9882e07e8574eddc679c8cb7f00495261b942c447b9a63714203438479cdda7d7ab732c17466e5fa55f686338af2d6801b1ec24ec09bb00079fb767432677d8ec563be22409f4ebdcb4e51981c037a4d53075c3628c6d0203010001'
+
+
+    def arr = parseHexString(pubKeyHexString)
+    ANS_1Decoder decoder = new ANS_1Decoder()
+
+    def data = decoder.decode(new ByteArrayInputStream(arr))
+
+    println Utils.fieldsToJson(data)
+}
+
 //run_encode7bitGroup()
 //run_decodeData()
-run_decodeIssuerOfCertificate()
+//run_decodeIssuerOfCertificate()
+run_decodeANS1DERPublicKey()

@@ -862,6 +862,18 @@ class BitUtils {
 class HexUtils {
     private HexUtils() {}
 
+    static String quoteToEscapeString(String hexString) {
+        return quoteToEscapeString(parseHexString(hexString))
+    }
+
+    static String quoteToEscapeString(byte[] data) {
+        StringBuilder stringBuilder = new StringBuilder(data.length * 4)
+        for (int i = 0; i < data.length; i++) {
+            stringBuilder.append("\\x").append(getHexChar((data[i] >> 4) & 0xf)).append(getHexChar(data[i] & 0xf))
+        }
+        return stringBuilder.toString()
+    }
+
     static String getHexString(byte b) {
 //        println "b=${b}, ${Integer.toBinaryString(b)},${Integer.toBinaryString(-155)}"
         // b扩展为整数，符号位

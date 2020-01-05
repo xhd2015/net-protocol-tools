@@ -80,6 +80,39 @@ enum CipherSuite {
     }
 }
 
+/**
+ * message diggest algorithm
+ */
+enum HashAlgorithm {
+    NONE(0, null),
+    MD5(1, "MD5"),
+    SHA1(2, "SHA-1"),
+    SHA224(3, "SHA-224"),
+    SHA256(4, "SHA-256"),
+    SHA384(5, "SHA-384"),
+    SHA512(6, "SHA-512")
+    byte value;
+    String algoName;
+
+    HashAlgorithm(int value, String algoName) { this.value = (byte) value; this.algoName = algoName; }
+}
+
+enum SignatureAlgorithm {
+    ANONYMOUS(0),
+    RSA(1),
+    DSA(2),
+    ECDSA(3);
+    byte value;
+
+    SignatureAlgorithm(int value) { this.value = (byte) value; }
+
+}
+
+class SignatureAndHashAlgorithm {
+    HashAlgorithm hash;
+    SignatureAlgorithm signature;
+}
+
 enum SignatureHashAlgorithmExtension {
     ecdsa_secp256r1_sha256(0x0403),
     ecdsa_secp384r1_sha384(0x0503),
