@@ -48,7 +48,7 @@
         <curator.version>2.10.0</curator.version>
         <zookeeper.version>3.4.6</zookeeper.version>
         <zkclient.version>0.7</zkclient.version>
-        <netty.version>4.0.23.Final</netty.version>
+        <netty.version>4.1.42.Final</netty.version>
         <c3p0.version>0.9.1.2</c3p0.version>
         <hibernate.validator>5.2.4.Final</hibernate.validator>
         <javax.el.version>3.0.0</javax.el.version>
