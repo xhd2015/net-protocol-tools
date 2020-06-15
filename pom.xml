@@ -50,7 +50,7 @@
         <zkclient.version>0.7</zkclient.version>
         <netty.version>4.0.23.Final</netty.version>
         <c3p0.version>0.9.1.2</c3p0.version>
-        <hibernate.validator>5.2.4.Final</hibernate.validator>
+        <hibernate.validator>5.3.5.Final</hibernate.validator>
         <javax.el.version>3.0.0</javax.el.version>
         <guava.version>18.0</guava.version>
 
