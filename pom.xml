@@ -20,7 +20,7 @@
         <logback-classic.version>1.1.7</logback-classic.version>
         <shiro.version>1.2.4</shiro.version>
         <commons-lang3.version>3.4</commons-lang3.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <commons-codec.version>1.10</commons-codec.version>
