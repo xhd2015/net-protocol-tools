@@ -33,7 +33,7 @@
         <servlet-api.version>2.5</servlet-api.version>
         <junit.version>4.12</junit.version>
         <quartz.version>2.2.3</quartz.version>
-        <mysql.version>5.1.38</mysql.version>
+        <mysql.version>8.0.28</mysql.version>
         <mybatis.version>3.3.0</mybatis.version>
         <mybatis-spring.version>1.2.3</mybatis-spring.version>
         <jedis.version>2.9.0</jedis.version>
